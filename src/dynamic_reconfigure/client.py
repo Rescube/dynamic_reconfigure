@@ -72,6 +72,7 @@ class Client(object):
         """
         self.name = name
         self.config = None
+        self.timeout = timeout
         self.param_description = None
         self.group_description = None
 
@@ -165,7 +166,7 @@ class Client(object):
 
         return self.group_description
 
-    def update_configuration(self, changes):
+    def update_configuration(self, changes, timeout=None):
         """
         Change the server's configuration
 
@@ -174,7 +175,7 @@ class Client(object):
         """
         # Retrieve the parameter descriptions
         if self.param_description is None:
-            self.get_parameter_descriptions()
+            self.get_parameter_descriptions(timeout)
 
         # Cast the parameters to the appropriate types
         if self.param_description is not None:
@@ -224,7 +225,7 @@ class Client(object):
             raise DynamicReconfigureCallbackException('service call failed')
 
         if self.group_description is None:
-            self.get_group_descriptions()
+            self.get_group_descriptions(timeout)
         resp = decode_config(msg, self.group_description)
 
         return resp
